@@ -44,7 +44,30 @@ function FallbackModel() {
   const { scene } = useGLTF(assetUrl("props/placeholder.glb"));
   return <primitive object={scene.clone()} />;
 }
+function PhotoPlane() {
+  const texture = useTexture(assetUrl("editorial/foto.png"));
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 8;
+
+  return (
+    <mesh>
+      <planeGeometry args={[0.98, 1.56]} />
+      <meshStandardMaterial
+        map={texture}
+        side={THREE.DoubleSide}
+        roughness={0.82}
+        metalness={0}
+      />
+    </mesh>
+  );
+}
+
 function Model({ item }) {
+  if (item.id === "foto") return <PhotoPlane />;
+  return <GLTFModel item={item} />;
+}
+
+function GLTFModel({ item }) {
   const { gl } = useThree();
   const { scene } = useGLTF(assetUrl("props/" + item.file), assetUrl("draco/"), true, (loader) =>
     configureLoader(loader, gl),
